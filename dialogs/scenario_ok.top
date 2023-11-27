@@ -1,0 +1,13 @@
+topic: ~simple()
+language: frf
+
+u:([pirouette e:Robowse/Start]) $Robowse/Page/Selection=1  scénario éthique  $Robowse/Page/Selection=1
+
+	u1:([Sourd e:Robowse/Numero1])	$Robowse/Select="S" Sourd? Ok $sourd_select=1
+
+	u1:([Aveugle e:Robowse/Numero2])  	$Robowse/Select="A" Aveugle? Ok $aveugle_select=1
+
+	u1:([Muet e:Robowse/Numero3])		$Robowse/Select="M" Muet? Ok $Muet_select=1
+
+	u1:([Moi e:Robowse/Numero4])		$Robowse/Select="Moi" Moi? Ok $moi_select=1
+

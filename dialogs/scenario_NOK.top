@@ -1,0 +1,19 @@
+topic: ~simple()
+language: frf
+
+u:([e:Robowse/StartNOK]) $Robowse/Page/rebus=1  première énigme résolvez ce rébus pour trouver deux nombres. Seulement l'aveugle peut saisir le bon chiffre $Robowse/Page/rebus=1
+
+	u1:([Sourd e:Robowse/Nombre1])	42? Ok $sourd_select=1
+
+	u1:([Aveugle e:Robowse/Nombre2])  31? Ok $aveugle_select=1
+
+	u1:([Muet e:Robowse/Nombre3])	21? Ok $Muet_select=1
+
+	u1:([Moi e:Robowse/Nombre4])		vive les singes? Ok $moi_select=1
+
+
+u:([e:Robowse/Next]) Bravo tu as trouvé $Robowse/Page/YesNo=1 
+
+	u1:([Oui e:Robowse/ButtonYes]) $Robowse/Start=1 OK 
+Robowse
+	u1:([Non e:Robowse/ButtonNo]) $Robowse/Page/Start=1 OK, bye ! $choix_scenario=1
