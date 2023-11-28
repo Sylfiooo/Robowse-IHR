@@ -1,13 +1,3 @@
-# RO-GO-T - Alexis THOMAS / Tanguy FROUIN
+# Example Robowse
 
-## Cas éthique mis en oeuvre
-
-## Références bibliographiques des cas éthiques
-
-## Story board
-
-## Lien vers vidéo Youtube
-
-## Instructions de mise en route
-
-## Instructions d'usage
+Permet de passer une commande en doublant l'information à la fois en vocal et en visuel au travers d'une page web

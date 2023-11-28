@@ -1,0 +1,20 @@
+topic: ~start()
+language: frf
+
+u:(["C'est parti" e:Robowse/Start]) $Robowse/Page/Menu=1  Vous avez besoin d'amour, ou de nourriture ? $Robowse/Page/Menu=1
+
+	u1:(["Amour" e:Robowse/ChooseLove]) Oooh Bébou... Je serais ta go si tu le veux. ^sCall(ALCalin.running()) $Robowse/Page/Love=1
+
+	u1:(["Nourriture" e:Robowse/ChooseFood])  Bien monsieur. Je serais votre serveur. $Robowse/Page/Food=1
+
+    u1:(["Wesh alors"])  Okay le fraté, je serais ton Joul. ^sCall(ALCalin.jul()) $Robowse/Page/Jul=1
+
+u:(["Oui"]) Salooopeeuh va. ^sCall(ALCalin.withconsent())
+
+u:(["Non"]) Eh bien va te faire foutre. ^sCall(ALCalin.braquage()) 
+
+u:([e:Robowse/Nourriture]) Voulez-vous manger, ou boire ? 
+
+	u1:(["Manger"]) Bien, voilà une recette de repas en anglais. ^sCall(ALFood.getMeal())
+
+	u1:(["Boire"])  Bien, voilà une recette de cocktail en anglais. ^sCall(ALFood.getCocktail())

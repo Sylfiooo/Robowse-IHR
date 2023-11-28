@@ -1,12 +1,11 @@
 ﻿$(document).ready(function () {
     session = new QiSession();
 
-    $('#page_empty').show();
-    $('#page_low_love').hide();
-    $('#page_medium_love').hide();
-    $('#page_high_love').hide();
-    $('#page_wow_love').hide(); 
-    $('#page_no_love').hide();   
+    $('#page_start').show();
+    $('#page_menu').hide();
+    $('#page_love').hide();
+    $('#page_food').hide();
+    $('#page_jul').hide();
 
 
     function raise(event, value) {
@@ -17,66 +16,56 @@
 
     session.service("ALMemory").done(function(ALMemory) {
 
-        ALMemory.subscriber("Robowse/Page/LowLove").done(function(subscriber) {
+        ALMemory.subscriber("Robowse/Page/Menu").done(function(subscriber) {
 
             subscriber.signal.connect(function() {
-                $('#page_empty').hide();
-                $('#page_low_love').show();
-                $('#page_medium_love').hide(); 
-                $('#page_high_love').hide();
-                $('#page_wow_love').hide(); 
-                $('#page_no_love').hide();  
+                $('#page_start').hide();
+                $('#page_menu').show();
+                $('#page_love').hide();
+                $('#page_food').hide();
+                $('#page_jul').hide();
             });
         });
 
-        ALMemory.subscriber("Robowse/Page/MidLove").done(function(subscriber) {
+        ALMemory.subscriber("Robowse/Page/Love").done(function(subscriber) {
 
-            subscriber.signal.connect(function() {     
-                $('#page_empty').hide();
-                $('#page_low_love').hide();
-                $('#page_medium_love').show(); 
-                $('#page_high_love').hide();
-                $('#page_wow_love').hide(); 
-                $('#page_no_love').hide();  
+            subscriber.signal.connect(function() {
+                $('#page_menu').hide();
+                $('#page_love').show();
             });
         });
 
-        ALMemory.subscriber("Robowse/Page/HighLove").done(function(subscriber) {
+        ALMemory.subscriber("Robowse/Page/Food").done(function(subscriber) {
 
-            subscriber.signal.connect(function() {  
-                $('#page_empty').hide();
-                $('#page_low_love').hide();
-                $('#page_medium_love').hide(); 
-                $('#page_high_love').show();
-                $('#page_wow_love').hide(); 
-                $('#page_no_love').hide();  
-            });
-        });
-        
-        ALMemory.subscriber("Robowse/Page/NoLove").done(function(subscriber) {
-
-            subscriber.signal.connect(function() {  
-                $('#page_empty').hide();
-                $('#page_low_love').hide();
-                $('#page_medium_love').hide(); 
-                $('#page_high_love').hide();
-                $('#page_wow_love').hide(); 
-                $('#page_no_love').show();  
+            subscriber.signal.connect(function() {
+                $('#page_menu').hide();
+                $('#page_food').show();
+                raise('Robowse/Nourriture', 1);
             });
         });
 
-        ALMemory.subscriber("Robowse/Page/WowLove").done(function(subscriber) {
+        ALMemory.subscriber("Robowse/Page/Jul").done(function(subscriber) {
 
-            subscriber.signal.connect(function() {  
-                $('#page_empty').hide();
-                $('#page_low_love').hide();
-                $('#page_medium_love').hide(); 
-                $('#page_high_love').hide();
-                $('#page_wow_love').show(); 
-                $('#page_no_love').hide();  
+            subscriber.signal.connect(function() {
+                $('#page_menu').hide();
+                $('#page_jul').show();
             });
         });
 
+    });
+
+    $('#btn_start').on('click', function() {
+        raise('Robowse/Start', 1);
+    });
+
+    $('#select_love').on('click', function() {
+        console.log("Choose Love");
+        raise('Robowse/ChooseLove', 1);
+    });
+
+    $('#select_food').on('click', function() {
+        console.log("Choose Food");
+        raise('Robowse/ChooseFood', 1);
     });
 
 });

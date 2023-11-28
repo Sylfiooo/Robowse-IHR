@@ -4,24 +4,30 @@
 import qi
 import argparse
 import sys
+import math
 import time
 from math import pi
 import signal
+from services.alcalin import ALCalin
+from services.alfood import ALFood
 
-class SimpleMove(object):
-    """
-    A Simple class to test body and base movements.
-    """
+pi = math.pi
 
-    def turn(self, angle):
-        """
-        Robot turn with an angle in degrees
+def wake_up(motion_service):
+    # Activer les moteurs
+    motion_service.wakeUp()
 
-        /!\ THE CHARGING FLAP MUST BE CLOSED to allow the robot base to move /!\ 
+    # Désactiver le mode de repos automatique
+    motion_service.setBreathEnabled('Body', False)
+    motion_service.setIdlePostureEnabled('Body', False)
 
-        """        
-        self._motion.moveTo(0, 0, angle*pi/180 )
-        
+def go_sleep(motion_service):
+    # Réactiver le mode de repos automatique
+    motion_service.setBreathEnabled('Body', True)
+    motion_service.setIdlePostureEnabled('Body', True)
+
+    # Mettre le robot en mode repos
+    motion_service.rest()        
 
 def hand_hello(motion_service):
     """
@@ -53,37 +59,38 @@ def hand_hello(motion_service):
     motion_service.stiffnessInterpolation(name_stiffness, 0.8, 0.2)
 
 def main(session):
+     # Création et enregistrement des services
+    calin_serv = ALCalin(session)
+    calin_serv_id = session.registerService("ALCalin", calin_serv)
+    food_serv = ALFood(session)
+    food_serv_id = session.registerService("ALFood", food_serv)
+    
     # Get the service ALTabletService.
     try:
         tabletService = session.service("ALTabletService")
         tabletService.loadApplication("ROBOWSE")
         tabletService.showWebview()
-    except Exception, e:
+    except Exception as e:
         print "Error was: ", e
 
     # Get the service ALMotionService.
     try:
         motionService = session.service("ALMotion")
         motionService.wakeUp()
-    except Exception, e:
-        print "Error was: ", e
+    except Exception as e:
+        print 'Error was: ', e
     
     # Getting the service ALDialog
     try:
     	ALDialog = session.service("ALDialog")
         ALDialog.resetAll()
-    	ALDialog.setLanguage("French")
+        ALDialog.setLanguage("French")
 
     	# Loading the topics directly as text strings
-    	topic_name = ALDialog.loadTopic("/home/nao/.local/share/PackageManager/apps/ROBOWSE/dialogs/robowse_simple_fr.top")
-
-    	# Activating the loaded topics
-    	ALDialog.activateTopic(topic_name)
-
-    	# Starting the dialog engine - we need to type an arbitrary string as the identifier
-    	# We subscribe only ONCE, regardless of the number of topics we have activated
-    	ALDialog.subscribe('robowsedialog')
-    except Exception, e:
+    	topic_name_start = ALDialog.loadTopic("/home/nao/.local/share/PackageManager/apps/ROBOWSE/dialogs/robowse_start_fr.top")
+        ALDialog.activateTopic(topic_name_start)
+        ALDialog.subscribe('robowsedialog')
+    except Exception as e:
         print "Error was: ", e
 
     # Get the service ALAudioPlayer.
@@ -91,18 +98,30 @@ def main(session):
         audio_player_service = session.service("ALAudioPlayer")
         
         #plays a file and get the current position 5 seconds later
-        fileId = audio_player_service.loadFile("/data/home/nao/.local/share/PackageManager/apps/ROBOWSE/sounds/gun.wav")
-        audio_player_service.play(fileId, _async=True)
+        #fileId = audio_player_service.loadFile("/data/home/nao/.local/share/PackageManager/apps/ROBOWSE/sounds/gun.wav")
+        #audio_player_service.play(fileId, _async=True)
 
-        time.sleep(3)
+        #time.sleep(3)
 
         #currentPos should be near 3 secs
-        currentPos = audio_player_service.getCurrentPosition(fileId)
-        print "The current position in file is: ", currentPos
-    except Exception, e:
+        #currentPos = audio_player_service.getCurrentPosition(fileId)
+        #print "The current position in file is: ", currentPos
+    except Exception as e:
         print "Error was: ", e
-    
-    #sm = SimpleMove(session)
+
+    # Get the service ALCalin.
+    try:
+        calin_serv = session.service("ALCalin")
+    except Exception as e:
+        print "Error was: ", e
+
+    # Get the service ALCalin.
+    try:
+        food_serv = session.service("ALFood")
+    except Exception as e:
+        print "Error was: ", e
+
+    calin_serv.TTS("Clique pour commencer, ou dis 'C\'est parti !'")
     hand_hello(motionService)
 
     try:
@@ -112,11 +131,14 @@ def main(session):
         ALDialog.unsubscribe('robowsedialog')
 
         # Deactivating the topic
-        ALDialog.deactivateTopic(topic_name)
+        ALDialog.deactivateTopic(topic_name_start)
 
         # now that the dialog engine is stopped and there are no more activated topics,
         # we can unload our topic and free the associated memory
-        ALDialog.unloadTopic(topic_name)
+        ALDialog.unloadTopic(topic_name_start)
+
+        session.unregisterService(calin_serv_id)
+        session.unregisterService(food_serv_id)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
